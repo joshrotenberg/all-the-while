@@ -4,12 +4,12 @@
 
 This little library basically came out of a fairly specific need; I
 have a set of tasks that a) need to run a long time (in a while()
-loop), need to run in parallel, and are responsible for their own
-per-loop runtime. The last part is where I needed something different
-than ScheduledThreadPoolExecutor. The logic inside the function will
-determine its run time, so, for example, iteration 1 may sleep for 2
-seconds, iteration 2 may not sleep at all, iteration 3 may sleep for
-half a second, i.e.
+loop), 2) need to run in parallel, and, last, are responsible for
+their own per-loop runtime. The last part is where I needed something
+different than ScheduledThreadPoolExecutor. The logic inside the
+function will determine its run time, so, for example, iteration 1 may
+sleep for 2 seconds, iteration 2 may not sleep at all, iteration 3 may
+sleep for half a second, i.e.
 
 ```clojure
 (while some-condition-is-true
@@ -22,15 +22,17 @@ half a second, i.e.
    ))
 ```
 
-This can be faked, for example, with overtone.at-at
+This can be faked, for example, with [overtone.at-at](https://github.com/overtone/at-at)
 
 ```clojure
 
 (every 10 (fn [] ;; everything but the while containter above 
 ```
 
-but this is wrong. I suppose you could make that 10 a 1, but my fear is that 
-some condition makes the internal queue fill up and all hell breaks loose.
+but I don't think that's right. While I tried it out, and noted that
+the queue never seemed to grow, it still felt wrong. I suppose you
+could make that 10 a 1, but my fear is that some condition makes the
+internal queue fill up and all hell breaks loose.
 
 So I wrote this. It's probably broken in its own special ways.
 
